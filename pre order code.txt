@@ -1,0 +1,195 @@
+ <style>
+  .stock-in-cta-info .show-out-of-stock-cta-info, .stock-out-cta-info .bundle-price-cart {  display: none;}
+  .stock-out-cta-info .show-out-of-stock-cta-info{display:block }
+  .stock-out-cta-info .show-out-of-stock-cta-info button { background-color: rgb(255 191 173 / 59%);  border-color: rgb(255, 139, 112); box-shadow: rgb(255, 139, 112) 4px 6px; width: 100%; position: relative; min-height: 53px;border: 1px solid #F19B8C; box-sizing: border-box; border-radius: 8px;font-style: normal; font-weight: bold; font-size: 13px;line-height: 16px; text-align: center;letter-spacing: 1px;text-transform: uppercase;color: #000000;opacity: 1;font-family: 'Montserrat', sans-serif !important; padding: 0 12px;visibility: visible !important;display: flex; flex-direction: row; flex-wrap: nowrap;align-items: center;justify-content: center;}
+   .custom-sold-out-btn-1pro {  display: none !important;} 
+</style> 
+
+{% comment %}
+    Renders a list of product's price (regular, sale, unit)
+    Accompanies product listings (collection page, search result) and not updated dynamically
+    Accepts:
+    - variant: {Object} Variant Liquid object (optional)
+    - product: {Object} Product Liquid object (optional)
+    - show_vendor: {Boolean} Show the product's vendor depending on the section setting (optional)
+
+    Usage:
+    {% include 'product-price-listing1', product: product %}
+{% endcomment %}
+{%- liquid
+  if product.title
+    assign compare_at_price = product.compare_at_price
+    assign price = product.price
+    assign available = product.available
+    assign variant = product.variants.first
+  else
+    assign compare_at_price = 1999
+    assign price = 1999
+    assign available = true
+  endif
+
+  assign money_price = price | money
+-%}
+ 
+
+<div class="bundle-price-cart">
+  
+   {% if product.variants.first.inventory_quantity <= 0 %}
+  
+  	<span>Sold Out</span>
+  
+    {% else %}
+  
+  <button type="button" name="add" 
+   class="btn product-form__cart-submit {% if product.tags contains 'add-bundle' %}bundle-button{% endif %}">
+  <select name="mini_id" class="mini-variantid hide">
+    {% for variant in product.variants %}
+    {% if variant.available %}
+    <option {% if variant == product.selected_or_first_available_variant %} selected="selected" {% endif %} data-price="{{variant.price | money | remove: '.00'  }}" data-compare-price="{{variant.compare_at_price | money | remove: '.00'  }}" data-option="{{ variant.title | split:'(' | first }}" value="{{ variant.id }}">
+      {{ variant.title }}
+    </option>
+    {% endif %}
+    {% endfor %}
+  </select>
+    
+     {% if product.tags contains 'choose_amount' %}
+       <a href="{{ product.url | within: collection }}">
+         <span id ="AddToCartText-{{ product.id }}" data-add-to-cart-text>
+           {% if product.tags contains 'choose_amount' %} CHOOSE AMOUNT {% endif %}
+         </span>
+       </a>
+     {% else %}
+      <span id ="AddToCartText-{{ product.id }}" data-add-to-cart-text>
+         {% if product.tags contains 'add-bundle' %}SHOP BUNDLES{%else%}ADD TO BAG{% endif %}
+      </span>
+    {% endif %}
+    
+    {% comment %}
+  <span class="hide" data-loader>
+    {% include 'icon-spinner' %}
+  </span>
+    {% endcomment %}
+  </button>
+  
+   {% endif %}
+  
+  {% if product.tags contains 'add-bundle' %}
+  
+  {% else %}
+<dl class="price price--listing
+             {%- if available == false %} price--sold-out {% endif -%}
+             {%- if compare_at_price > price %} price--on-sale {% endif -%}
+             {%- if product.price_varies == false and product.compare_at_price_varies %} price--compare-price-hidden {% endif -%}
+             {%- if variant.unit_price_measurement %} price--unit-available {% endif -%}"
+      >
+   {% comment %}{% if show_vendor and product %}
+    <div class="price__vendor price__vendor--listing">
+      <dt>
+        <span class="visually-hidden">{{ 'products.product.vendor' | t }}</span>
+      </dt>
+      <dd>
+        {{ product.vendor }}
+      </dd>
+    </div>
+    {% endif %}{% endcomment %}
+
+    {%- comment -%}
+    Explanation of description list:
+    - div.price__regular: Displayed when there are no variants on sale
+    - div.price__sale: Displayed when a variant is a sale
+    - div.price__unit: Displayed when the first variant has a unit price
+    - div.price__availability: Displayed when the product is sold out
+    {%- endcomment -%}
+    <div class="price__regular">
+      <dt>
+        <span class="visually-hidden visually-hidden--inline">{{ 'products.product.regular_price' | t }}</span>
+      </dt>
+      <dd>
+        <span class="price-item price-item--regular">
+          {%- if product.price_varies -%}
+          {{ 'products.product.from_lowest_price_html' | t: lowest_price: money_price }}
+          {%- else -%}
+          {{ money_price }}
+          {%- endif -%}
+        </span>
+      </dd>
+    </div>
+    <div class="price__sale">
+      <dt>
+        <span class="visually-hidden visually-hidden--inline">{{ 'products.product.sale_price' | t }}</span>
+      </dt>
+              <dd>
+          <s class="price-item price-item--regular">
+            {{ compare_at_price | money }}
+          </s>
+        </dd>
+      <div class="price__compare">
+        <dt>
+          <span class="visually-hidden visually-hidden--inline">{{ 'products.product.regular_price' | t }}</span>
+        </dt>
+      <dd>
+        <span class="price-item price-item--sale">
+          {%- if product.price_varies -%}
+          {{ 'products.product.from_lowest_price_html' | t: lowest_price: money_price }}
+          {%- else -%}
+          {{ money_price }}
+          {%- endif -%}
+        </span>
+      </dd>
+      </div>
+    </div>
+    <div class="price__unit">
+      <dt>
+        <span class="visually-hidden visually-hidden--inline">{{ 'products.product.unit_price_label' | t }}</span>
+      </dt>
+      <dd class="price-unit-price">
+        {%- capture unit_price_separator -%}
+        <span aria-hidden="true">/</span><span class="visually-hidden">{{ 'general.accessibility.unit_price_separator' | t }}&nbsp;</span>
+        {%- endcapture -%}
+        {%- capture unit_price_base_unit -%}
+        <span>
+          {%- if variant.unit_price_measurement -%}
+          {%- if variant.unit_price_measurement.reference_value != 1 -%}
+          {{- variant.unit_price_measurement.reference_value -}}
+          {%- endif -%}
+          {{ variant.unit_price_measurement.reference_unit }}
+          {%- endif -%}
+        </span>
+        {%- endcapture -%}
+
+        <span>{{ variant.unit_price | money }}</span>{{- unit_price_separator -}}{{- unit_price_base_unit -}}
+      </dd>
+    </div>
+
+
+    <!--div class="price__badges price__badges--listing">
+      <span class="price__badge price__badge--sale" aria-hidden="true">
+        <span>{{ 'products.product.on_sale' | t }}</span>
+      </span>
+      <span class="price__badge price__badge--sold-out">
+        <span>{{ 'products.product.sold_out' | t }}</span>
+      </span>
+    </div-->
+  </dl>
+  {% endif %}
+</div>
+
+
+<div class="show-out-of-stock-cta-info">
+  <button type="button" disabled style="display:none;" >Sold Out</button>
+  
+  <div class="{% if product.title contains 'Vibez' or 'The Penthouse Suite' or 'The Bed Breaker'  %}bundle-price-cartll  {% else %}bundle-price-cart {% endif %}">
+    
+    <div class="preorder-description">Ships on Mar 15, 2021</div>
+     <button type="button" name="add" class="btn product-form__cart-submit" value="Preorder Now">Preorder Now</button>
+  </div> 
+</div>
+
+
+<script>
+  jQuery('document').ready(function(){
+    if(window.location.pathname == "/collections/all-products-1"){
+      jQuery('ul.grid.grid--uniform.grid--view-items li.grid__item.grid__item--collection-template.small--one-half.medium-up--one-third button.btn.product-form__cart-submit').css('cssText', 'margin:0 auto !important');
+    }
+  })
+</script>

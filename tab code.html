@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Document</title>
+</head>
+<body>
+    
+  
+
+    <div class="warp-btn">
+    <button class="append">ADD DIV</button>
+    </div>
+
+    <div class="div-append">
+
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+
+
+    <script>
+        $(document).ready(function(){
+            $(".append").on("click", function(){
+                var divlen = $('.appended-div').length;
+
+                if (divlen <= 2) {
+
+               $('.div-append').append('<div class="appended-div">Div  appended <span></span><input type="text" name="text" class="write-text"></div>'); 
+           $('<div class="appended-btn">Appended Btn</div>').insertBefore(this);
+                }
+            });
+        });
+
+
+        $(document).on("keypress", ".write-text", function(e){
+            var inputVal = $(this).val();
+                console.log(inputVal);
+               $('.appended-div').find('span').text(inputVal);
+        
+        });
+
+    </script>
+
+</body>
+</html>

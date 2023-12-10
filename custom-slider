@@ -1,0 +1,166 @@
+<div class="owl-carousel owl-theme">
+  <div><img src="https://cdn.shopify.com/s/files/1/0611/0471/8018/files/yachts.jpg?v=1645733769" width="30"/></div>
+  <div><img src="https://cdn.shopify.com/s/files/1/0611/0471/8018/files/sailing.jpg?v=1645733769" width="30"/></div>
+  <div><img src="https://cdn.shopify.com/s/files/1/0611/0471/8018/files/profile.jpg?v=1645733769" width="30"/></div>
+  <div><img src="https://cdn.shopify.com/s/files/1/0611/0471/8018/files/image-2.png?v=1645733769" width="30"/></div>
+  <div><img src="https://cdn.shopify.com/s/files/1/0611/0471/8018/files/hero.jpg?v=1645733777" width="30"/></div>
+  <div><img src="https://cdn.shopify.com/s/files/1/0611/0471/8018/files/boat-work.png?v=1645733769" width="30"/></div>
+  <div><img src="https://cdn.shopify.com/s/files/1/0611/0471/8018/files/boat.jpg?v=1645733769" width="30"/></div>
+  <div><img src="https://cdn.shopify.com/s/files/1/0611/0471/8018/files/image-2.png?v=1645733769" width="30"/></div>
+  
+</div>
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
+<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.4.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+
+<script>
+ $(".owl-carousel").owlCarousel({
+	nav: true,
+  dots: false,
+  loop: false,
+  rewind: true,
+  // autoWidth: true,
+  stagePadding: 0,
+  margin: 4,
+  checkVisibility: true,
+  navElement: 'div',
+  responsive : {
+    0 : {
+      items: 1,
+      slideBy: 1
+    },
+    768 : {
+      items: 2,
+      slideBy: 2
+    },
+    1024 : {
+      items: 3,
+      slideBy: 3
+    },
+    1280 : {
+      items: 4,
+      slideBy: 4
+    },
+    1440 : {
+      items: 5,
+      slideBy: 1
+    }
+  }
+});
+  
+</script>
+
+<style>
+  
+$offset-padding-item: 40%;
+$offset-padding-wrap: 8%; // (width of ".owl-carousel") / 5 * 40%
+$bgc-owl-carousel: Aqua;
+$bgc-owl-stage-outer: AliceBlue;
+$bgc-item-odd: LightGreen;
+$bgc-item-even: LightBlue;
+$bdc-item-border: Brown;
+
+* {
+  box-sizing: border-box;
+  transition: all .5s ease;
+}
+
+.owl-carousel {
+  position: relative;
+  width: 100%;
+  max-width: 80%;
+  margin: 20px auto;
+  padding: 10px $offset-padding-wrap;
+  border: 2px solid $bgc-owl-carousel;
+  background-color: transparent;
+  overflow: hidden;
+  box-sizing: content-box;
+  
+  &:hover {
+    background-color: $bgc-owl-carousel;
+  }
+  
+  .owl-stage-outer {
+    overflow: visible;
+    
+    &:hover {
+      background-color: $bgc-owl-stage-outer;
+    }
+    
+    // vertical centering border-line
+    &:before {
+      content: '';
+      display: block;
+      position: absolute;
+      top: 50%;
+      left: 10px;
+      right: 10px;
+      height: 1px;
+      background-color: #ccc;
+    }
+  }
+}
+
+.owl-stage {
+  height: 300px;
+}
+
+.owl-item {
+  float: left;
+  position: relative;
+  height: calc(50% - 10px);
+  transition: opacity 1s ease;
+  
+  &:not(.active) {
+    opacity: 0;
+  }
+  
+  // For easy testing border-line 
+  &:after {
+    content: '';
+    display: block;
+    position: absolute;
+    width: calc(100% - 4px);
+    height: calc(100% - 4px);
+    border: 2px solid $bdc-item-border;
+    opacity: 0;
+    transition: opacity .5s ease;
+    
+    @at-root .owl-carousel:hover & {
+      opacity: 1;
+    }
+  }
+  
+  > div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(100% + #{$offset-padding-item} * 2);
+    height: 100%;
+    opacity: .5;
+  }
+  
+  &:nth-child(odd) > div {
+    top: 0;
+    background: $bgc-item-odd;
+  }
+  
+  &:nth-child(even) > div {
+    top: calc(100% + 20px);
+    background-color: $bgc-item-even;
+  }
+}
+  .owl-prev {
+    font-size: 45px;
+    font-weight: bold;
+}
+  .owl-next {
+    font-size: 45px;
+    font-weight: bold;
+}
+</style>
