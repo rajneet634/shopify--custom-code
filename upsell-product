@@ -1,0 +1,63 @@
+
+<div class="collection-upsell slick-slider">
+  {% for product in collections.upsell-collection.products %}
+    <div class="product-item">
+      <a href="{{ product.url }}">
+        <img src="{{ product.featured_image | img_url: 'medium' }}"/>
+      </a>
+      <h2>{{ product.title }}</h2>
+      <p>{{ product.price | remove:'00'}}</p>
+      {% for variant in product.variants %}
+        <input type="hidden" class="upsell-id" value="{{ variant.id }}"/>
+      {% endfor %}
+      <button type="button" class="add-to-cart-btn" data-product-id="{{ product.id }}">
+        {% if product.selected_or_first_available_variant.available %}
+          Add to Cart
+        {% else %}
+          Sold Out
+        {% endif %}
+      </button>
+    </div>
+  {% endfor %}
+</div>
+
+<script>
+  jQuery(document).ready(function($) {
+    // Initialize the Slick slider
+    $('.slick-slider').slick({
+      autoplay: true,
+      autoplaySpeed: 2000,
+      dots: true,
+      arrows: true,
+      infinite: true, // Adjust as needed
+      slidesToShow: 1, // Adjust the number of slides shown
+      slidesToScroll: 1 // Adjust the number of slides scrolled
+    });
+
+    // Add-to-cart button click event
+    $('.add-to-cart-btn').on('click', function() {
+      let productId = $(this).data('product-id');
+      let variantId = $(this).siblings('.upsell-id').val();
+
+      let formData = {
+        quantity: 1,
+        id: variantId
+      };
+
+      $.ajax({
+        type: 'post',
+        url: '/cart/add.js',
+        cache: false,
+        data: formData,
+        dataType: 'json',
+        success: function(data) {
+          console.log('Success:', data);
+          window.location.href = '/cart';
+        },
+        error: function(xhr, ajaxOption, throwError) {
+          console.log('Error:', xhr, throwError);
+        }
+      });
+    });
+  });
+</script>
